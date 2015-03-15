@@ -43,12 +43,14 @@ FFS::FFS()
 void FFS::CS_LOW(void)
 {
     digitalWrite(CS, LOW);
+    digitalWrite(RED_LED, HIGH);
     //SDCard_setCSLow();
 }
 
 void FFS::CS_HIGH(void)
 {
     digitalWrite(CS, HIGH);
+    digitalWrite(RED_LED, LOW);
     //SDCard_setCSHigh();
 }
 
@@ -108,9 +110,20 @@ void FFS::SPI_HIGH_SPEED(void)
 
 void FFS::SPI_INIT(void)
 {
-    SPI.begin();
-    SPI.setClockDivider(32);
+    //pinMode(RED_LED,OUTPUT);
+    //SPI.begin();
+    SPI.setClockDivider(0x30);
     //SDCard_init();
+}
+
+void FFS::SPI_ENABLE_PULLUP(void)
+{    
+    pinMode(MISO, INPUT_PULLUP);
+}
+
+void FFS::SPI_DISABLE_PULLUP(void)
+{
+    pinMode(MISO, INPUT);
 }
 
 /*-----------------------------------------------------------------------*/
@@ -145,11 +158,13 @@ FRESULT FFS::begin(
     CS = cs_pin;
     pinMode(CS, OUTPUT);
 
-    attach_cs_pin(CS_LOW, CS_HIGH);
+    SPI.begin();
+    attach_pins(CS_LOW, CS_HIGH, SPI_ENABLE_PULLUP, SPI_DISABLE_PULLUP);
     attach_SPIdriver(SPI_RECEIVE, SPI_SEND, SPI_INIT, SPI_HIGH_SPEED);
 
     byte r = 0;
-    if( r = disk_init() != 0) Serial.print("Disk init failed: "); Serial.println(r);
+    r = disk_init();
+    if(r != 0) Serial.print("Disk init failed: "); Serial.println(r);
     
     
     res = mount(0, &fatfs_obj);

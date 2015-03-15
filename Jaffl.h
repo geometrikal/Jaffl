@@ -47,6 +47,8 @@ private:
     static void SPI_SET_DIVIDER(const uint8_t);
     static void SPI_INIT(void);
     static void SPI_HIGH_SPEED(void);
+    static void SPI_ENABLE_PULLUP(void);
+    static void SPI_DISABLE_PULLUP(void);
 
 public:
     FFS();
