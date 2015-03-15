@@ -276,9 +276,6 @@ uint8_t send_cmd (                     /* Returns command response (bit7==1:Send
     }
     /* Select the card and wait for ready */
     deselect();
-//    rcvr_mmc(&d, 1);
-//    select();
-//    rcvr_mmc(&d, 1);
     if (!select()){
         return ( 0xFF) ;
     }
@@ -376,9 +373,7 @@ DSTATUS disk_initialize (
     s = disk_status(drv);                                               /* Check if card is in the socket */
     if (s & STA_NODISK){
         return ( s) ;
-    }
-    
-
+    }   
     CS_H();
     for (n = 10; n; n--){rcvr_mmc(buf, 1);                              /* 80 dummy clocks */
     }

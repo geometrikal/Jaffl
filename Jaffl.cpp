@@ -109,7 +109,7 @@ void FFS::SPI_HIGH_SPEED(void)
 void FFS::SPI_INIT(void)
 {
     SPI.begin();
-    SPI.setClockDivider(128);
+    SPI.setClockDivider(32);
     //SDCard_init();
 }
 

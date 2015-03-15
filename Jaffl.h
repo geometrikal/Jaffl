@@ -19,7 +19,6 @@
 extern "C" {
 #include "ff11/ff.h"
 #include "ff11/diskio.h"
-#include "ff11/mmc.h"
 #include "ff11/integer.h"
 #include "ff11/ffconf.h"
 }
