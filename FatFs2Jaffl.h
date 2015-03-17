@@ -8,10 +8,10 @@
 #ifndef FATFS2JAFFL_H
 #define	FATFS2JAFFL_H
 
-#include "ff11/integer.h"
+#include "utility/integer.h"
 
 // Functions to attach Jaffl to FatFs
-void attach_pins(void (*cs_low)(void), void (*cs_high)(void), void (*en_MISO_pullup)(void), void (*dis_MISO_pullup)(void));
+void attach_pins(void (*cs_low)(void), void (*cs_high)(void));
 void attach_SPIdriver(void (*spi_receive)(BYTE*,UINT), void (*spi_send)(BYTE*,UINT) , void (*spi_init)(void), void (*spi_high_speed)(void));
 // Extra functions not in diskio.h
 BYTE validateCSD (void);

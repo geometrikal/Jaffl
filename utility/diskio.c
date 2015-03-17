@@ -19,8 +19,6 @@
  */
 static void (*CS_L)(void); //CS_LOW
 static void (*CS_H)(void); // CS_HIGH
-static void (*MISO_PULLUP_ENABLE)(void); //CS_LOW
-static void (*MISO_PULLUP_DISABLE)(void); // CS_HIGH
 //#define DLY_US(n)       __delay_cycles(n * (F_CPU / 1000000))   //Delay n microseconds           // KLQ
 static BYTE(*rcvr_mmc)(BYTE*, UINT);
 static BYTE(*xmit_mmc)(BYTE*, UINT);
@@ -42,11 +40,9 @@ uint8_t INS = 1; //KLQ
 
 /*-----------------------------------------------------------------------*/
 
-attach_pins(void (*cs_low)(void), void (*cs_high)(void), void (*en_MISO_pullup)(void), void (*dis_MISO_pullup)(void)) {
+attach_pins(void (*cs_low)(void), void (*cs_high)(void)) {
     CS_L = cs_low;
     CS_H = cs_high;
-    MISO_PULLUP_ENABLE = en_MISO_pullup;
-    MISO_PULLUP_DISABLE = dis_MISO_pullup;
 }
 
 /*-----------------------------------------------------------------------*/
@@ -362,23 +358,23 @@ DSTATUS disk_initialize(
     DSTATUS s;
 
 
-
+    
     INIT_PORT(); /* Initialize control port */
-    MISO_PULLUP_ENABLE();
+    
     s = disk_status(drv); /* Check if card is in the socket */
     if (s & STA_NODISK) {
         return ( s);
     }
     CS_H();
-    for (n = 30; n; n--) {
+    for (n = 10; n; n--) {
         rcvr_mmc(buf, 1); /* 80 dummy clocks */
     }
     ty = 0;
-    //    n = 0;
-    //    while (send_cmd(CMD0, 0) != 1 && n < 5) {
-    //        n++;
-    //    }
-    //    return send_cmd(CMD0, 0);
+    int cc = 0;
+    while (send_cmd(CMD0, 0) != 1 && cc < 1000) {
+        cc++;
+        DLY_US(1000);
+    }
     if (send_cmd(CMD0, 0) == 1) { /* Enter Idle state */
         if (send_cmd(CMD8, 0x1AA) == 1) { /* SDv2? */
             rcvr_mmc(buf, 4); /* Get trailing return value of R7 resp */
@@ -422,8 +418,6 @@ DSTATUS disk_initialize(
     } else { /* Initialization failed */
         s |= STA_NOINIT;
     }
-    
-    MISO_PULLUP_DISABLE();
     
     Stat = s;
     return (s);

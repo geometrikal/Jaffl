@@ -10,6 +10,7 @@
  * http://elm-chan.org/fsw/ff/00index_e.html
  */
 
+#include <msp430.h>
 #include "SPI.h"
 #include "Jaffl.h"
 extern "C" {
@@ -105,29 +106,16 @@ void FFS::SPI_SET_DIVIDER(const uint8_t _clkdivider)
 void FFS::SPI_HIGH_SPEED(void)
 {
     SPI.setClockDivider(_clkdivider);
-    //SDCard_fastMode();
 }
 
 void FFS::SPI_INIT(void)
 {
-    //pinMode(RED_LED,OUTPUT);
-    //SPI.begin();
-    SPI.setClockDivider(0x30);
-    //SDCard_init();
-}
-
-void FFS::SPI_ENABLE_PULLUP(void)
-{    
-    pinMode(MISO, INPUT_PULLUP);
-}
-
-void FFS::SPI_DISABLE_PULLUP(void)
-{
-    pinMode(MISO, INPUT);
+    SPI.begin();    
+    SPI.setClockDivider(128);
 }
 
 /*-----------------------------------------------------------------------*/
-/* Delay function for diskio driver   
+/* Delay function for diskio driver   */
 /*-----------------------------------------------------------------------*/
 
 void FFS::DLY10U(void)
@@ -136,7 +124,7 @@ void FFS::DLY10U(void)
 }
 
 /*-----------------------------------------------------------------------*/
-/* Setup FS Structures and Register CS Pin  
+/* Setup FS Structures and Register CS Pin  */
 /*-----------------------------------------------------------------------*/
 FRESULT FFS::begin(
         unsigned char cs_pin /* Pin to connect to CS */
@@ -157,16 +145,13 @@ FRESULT FFS::begin(
 
     CS = cs_pin;
     pinMode(CS, OUTPUT);
-
-    SPI.begin();
-    attach_pins(CS_LOW, CS_HIGH, SPI_ENABLE_PULLUP, SPI_DISABLE_PULLUP);
+    
+    
+    attach_pins(CS_LOW, CS_HIGH);
     attach_SPIdriver(SPI_RECEIVE, SPI_SEND, SPI_INIT, SPI_HIGH_SPEED);
-
-    byte r = 0;
-    r = disk_init();
-    if(r != 0) Serial.print("Disk init failed: "); Serial.println(r);
-    
-    
+        
+    disk_init();
+        
     res = mount(0, &fatfs_obj);
 
 #if _USE_DIR

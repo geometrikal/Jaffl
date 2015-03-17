@@ -17,10 +17,10 @@
 #include "Print.h"
 
 extern "C" {
-#include "ff11/ff.h"
-#include "ff11/diskio.h"
-#include "ff11/integer.h"
-#include "ff11/ffconf.h"
+#include "utility/ff.h"
+#include "utility/diskio.h"
+#include "utility/integer.h"
+#include "utility/ffconf.h"
 }
 
 #if (!_FS_READONLY)
@@ -45,10 +45,8 @@ private:
     static void SPI_RECEIVE(uint8_t *pBuffer, uint16_t size);
     static void SPI_SEND(uint8_t *pBuffer, uint16_t size);
     static void SPI_SET_DIVIDER(const uint8_t);
-    static void SPI_INIT(void);
     static void SPI_HIGH_SPEED(void);
-    static void SPI_ENABLE_PULLUP(void);
-    static void SPI_DISABLE_PULLUP(void);
+    static void SPI_INIT(void);
 
 public:
     FFS();
@@ -112,8 +110,8 @@ public:
     int printf(const char*, ...);
     char* gets(char*, int, FIL*); /* Get a string from the file */
     char* gets(char*, int);
-#define f_eof(fp) (((fp)->fptr == (fp)->fsize) ? 1 : 0)
-#define f_error(fp) (((fp)->flag & FA__ERROR) ? 1 : 0)
+//#define f_eof(fp) (((fp)->fptr == (fp)->fsize) ? 1 : 0)
+//#define f_error(fp) (((fp)->flag & FA__ERROR) ? 1 : 0)
 #ifndef EOF
 #define EOF -1
 #endif /* EOF */
