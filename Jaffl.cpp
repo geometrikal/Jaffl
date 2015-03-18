@@ -44,14 +44,14 @@ FFS::FFS()
 void FFS::CS_LOW(void)
 {
     digitalWrite(CS, LOW);
-    digitalWrite(RED_LED, HIGH);
+    //digitalWrite(RED_LED, HIGH);
     //SDCard_setCSLow();
 }
 
 void FFS::CS_HIGH(void)
 {
     digitalWrite(CS, HIGH);
-    digitalWrite(RED_LED, LOW);
+    //digitalWrite(RED_LED, LOW);
     //SDCard_setCSHigh();
 }
 
@@ -110,6 +110,7 @@ void FFS::SPI_HIGH_SPEED(void)
 
 void FFS::SPI_INIT(void)
 {
+    pinMode(P1_7, INPUT_PULLUP);
     SPI.begin();    
     SPI.setClockDivider(128);
 }
@@ -145,6 +146,7 @@ FRESULT FFS::begin(
 
     CS = cs_pin;
     pinMode(CS, OUTPUT);
+    
     
     
     attach_pins(CS_LOW, CS_HIGH);
